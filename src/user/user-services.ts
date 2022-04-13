@@ -41,7 +41,8 @@ export const userServices = (userDAL = userDB, passwordServices = passwordServic
       }
     },
 
-    async getUser({ id, email }: { id: string, email: string }) {
+
+    async getUser({ id, email }: User) {
       try {
         let user: User;
         if (email) {
@@ -51,6 +52,7 @@ export const userServices = (userDAL = userDB, passwordServices = passwordServic
         } else {
           throw new AppError('user services', 500, 'error finding user', true);
         }
+        if (!user) throw new AppError('user services', 404, 'that user does not exist', true);
         return user;
       } catch (err) {
         if (err.isOperational) throw err;
@@ -90,6 +92,5 @@ export const userServices = (userDAL = userDB, passwordServices = passwordServic
   }
 
 }
-
 
 export default userServices();
