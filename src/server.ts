@@ -1,14 +1,13 @@
 import express, { ErrorRequestHandler } from 'express';
-import { AppError, errorHandler } from './error';
+import { errorHandler } from './error';
+import { userAPI } from './user';
 
 const server = express();
-
 server.use(express.json());
 
-server.use('/', (req, res) => {
-  res.json('hello');
-});
+server.use('/api/v1/', userAPI);
 
+//custom error handler
 const errorReqHandler: ErrorRequestHandler = async (err, req, res, next) => {
   await errorHandler(err, res, next);
 };

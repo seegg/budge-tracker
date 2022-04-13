@@ -1,7 +1,6 @@
 import { pbkdf2Sync, randomBytes } from 'crypto';
 import { AppError } from '../../error';
 import passwordDB from './password-repo';
-import { PasswordDetails } from './types';
 
 export const passwordServices = (passwordHashService = pbkdf2Sync, generateByetes = randomBytes, pwRepo = passwordDB) => {
 
