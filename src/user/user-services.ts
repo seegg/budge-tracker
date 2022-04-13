@@ -55,7 +55,7 @@ export const userServices = (userDAL = userDB, passwordServices = passwordServic
         if (!user) throw new AppError('user services', 404, 'that user does not exist', true);
         return user;
       } catch (err) {
-        if (err.isOperational) throw err;
+        if (err instanceof AppError && err.isOperational) throw err;
         throw new AppError('user services', 500, 'error finding user', true);
       }
     },
@@ -66,7 +66,7 @@ export const userServices = (userDAL = userDB, passwordServices = passwordServic
         if (!user) throw new AppError('user services', 404, 'that user does not exist', true);
         return user;
       } catch (err) {
-        if (err.isOperational) throw err;
+        if (err instanceof AppError && err.isOperational) throw err;
         throw new AppError('user services', 500, 'error finding user', true);
       }
     },
@@ -77,7 +77,7 @@ export const userServices = (userDAL = userDB, passwordServices = passwordServic
         if (!user) throw new AppError('user services', 404, 'that user does not exist', true);
         return user;
       } catch (err) {
-        if (err.isOperational) throw err;
+        if (err instanceof AppError && err.isOperational) throw err;
         throw new AppError('user services', 500, 'error finding user', true);
       }
     },

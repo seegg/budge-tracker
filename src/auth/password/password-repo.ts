@@ -14,7 +14,7 @@ export const getPasswordDetails = async (userID: string, db = connection) => {
 export const getPasswordDetailsByEmail = async (email: string, db = connection) => {
   try {
     const getUserIDSuquery = db('users').where('email', email).select('id');
-    const password = await db('passwords').where('user_id', getUserIDSuquery[0]);
+    const password = await db('passwords').where('user_id', 'in', getUserIDSuquery);
     return password[0] as PasswordDetails;
   } catch (err) {
     console.error(err);

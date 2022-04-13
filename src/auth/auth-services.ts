@@ -28,7 +28,7 @@ export const authServices = (jwt = jsonwebtoken,
       const { jwtKey } = appConfig;
       return jwt.verify(token, jwtKey);
     } catch (err) {
-      if (err.isOperational) throw err;
+      if (err instanceof AppError && err.isOperational) throw err;
       throw new AppError('parse token', 403, 'unable to verify access token', true);
     }
   };
@@ -46,7 +46,7 @@ export const authServices = (jwt = jsonwebtoken,
         throw new AppError('login', 401, 'wrong username or password', true);
       };
     } catch (err) {
-      if (err.isOperational) throw err;
+      if (err instanceof AppError && err.isOperational) throw err;
       throw new AppError('login', 500, 'error while processing credentials', true);
     }
   };

@@ -23,7 +23,7 @@ export const passwordServices = (passwordHashService = pbkdf2Sync, generateByete
     return generateByetes(size).toString('hex');
   };
 
-  const verifyUserPasswordByEmail = async (email: string, password) => {
+  const verifyUserPasswordByEmail = async (email: string, password: string) => {
     try {
       const passwordDetails = await pwRepo.getPasswordDetailsByEmail(email);
       const pwHash = hashPassword(password, passwordDetails.salt);
@@ -36,7 +36,7 @@ export const passwordServices = (passwordHashService = pbkdf2Sync, generateByete
   /**
    * verify password is correct.
    */
-  const verifyUserPasswordByID = async (userID: string, password) => {
+  const verifyUserPasswordByID = async (userID: string, password: string) => {
     try {
       const passwordDetails = await pwRepo.getPasswordDetails(userID);
       const pwHash = hashPassword(password, passwordDetails.salt);
