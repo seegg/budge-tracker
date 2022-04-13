@@ -73,7 +73,7 @@ export const userServices = (userDAL = userDB, passwordServices = passwordServic
       try {
         const user = await userDAL.getUserByID(id);
         if (!user) throw new AppError('user services', 404, 'that user does not exist', true);
-        return id;
+        return user;
       } catch (err) {
         if (err.isOperational) throw err;
         throw new AppError('user services', 500, 'error finding user', true);
