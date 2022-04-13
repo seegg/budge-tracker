@@ -1,9 +1,10 @@
+import { Knex } from "knex";
+
 /**
  * @param {import('knex')} knex 
  */
-export const up = async (knex) => {
-
-  return await knex.schema.createTable('user', table => {
+export const up = async (knex: Knex) => {
+  return await knex.schema.createTable('users', table => {
     table.string('id').primary();
     table.string('name');
     table.string('email').unique();
@@ -15,6 +16,6 @@ export const up = async (knex) => {
 /**
  * @param {import('knex')} knex 
  */
-export const down = async (knex) => {
-  return await knex.schema.dropTable('user');
+export const down = async (knex: Knex) => {
+  return await knex.schema.dropTable('users');
 };
