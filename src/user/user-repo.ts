@@ -21,9 +21,15 @@ export const getUserByEmail = async (email: string, db = connection) => {
   }
 };
 
-export const insertUser = async (newUser: User, db = connection) => {
+/**
+ * User a transaction to insert both a new user and associated password hash and salt
+ */
+export const insertUser = async (newUser: User, passwordHash: string, salt: string, db = connection) => {
   try {
-    return await db('users').insert(newUser);
+    await db.transaction(async trx => {
+      const [id] = await trx('users').insert(newUser, 'id');
+      await trx('passwords').insert({ user_id: id, password_hash: passwordHash, salt });
+    });
   } catch (err) {
     console.error(err);
     throw new Error('db error');

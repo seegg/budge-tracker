@@ -1,23 +1,26 @@
 import { User } from "./user-types";
 import { v4 as uuidv4 } from 'uuid';
 import { AppError } from "../error";
+import { passwordServices as passwordServiceModule } from "../auth/password";
 import { getUserByEmail, getUserByID, userDB } from './user-repo';
 
 /**
  * create user services with dependencies as parameters
  */
-export const userServices = (userDAL = userDB, idGenerator = uuidv4) => {
+export const userServices = (userDAL = userDB, passwordServices = passwordServiceModule, idGenerator = uuidv4) => {
 
   return {
     /**
      * Add a new user
      * @returns return user if successful.
      */
-    async addUser(newUser: Partial<User>) {
+    async addUser(newUser: Partial<User>, password: string) {
       try {
         const id = idGenerator();
         newUser.id = id;
-        await userDAL.insertUser(<User>newUser);
+        const salt = passwordServices.generateSalt();
+        const passwordHash = passwordServices.hashPassword(password, salt);
+        await userDAL.insertUser(<User>newUser, passwordHash, salt);
         return newUser;
       } catch (err) {
         throw new AppError('user services', 500, 'error adding new user', true);

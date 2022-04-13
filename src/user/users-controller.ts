@@ -1,11 +1,12 @@
 import { RequestHandler } from "express";
-import userServices from "./user-services";
+import userSerivcesModule from "./user-services";
 
-export const userHandlers = (services = userServices) => {
+export const userHandlers = (userServices = userSerivcesModule) => {
+
   const getUser: RequestHandler = async (req, res, next) => {
     try {
       const { id } = req.params;
-      const user = await services.getUserByID(id);
+      const user = await userServices.getUserByID(id);
       res.json(user);
     } catch (err) {
       next(err);
@@ -14,8 +15,9 @@ export const userHandlers = (services = userServices) => {
 
   const postUser: RequestHandler = async (req, res, next) => {
     try {
-      const user = await services.addUser(req.body);
-      res.json(user);
+      const { user, password } = req.body;
+      const newUser = await userServices.addUser(user, password);
+      res.json(newUser);
     } catch (err) {
       next(err);
     }
