@@ -1,0 +1,1 @@
+export { default as newUserValidationSchema } from './new-user-schema';

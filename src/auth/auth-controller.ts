@@ -1,6 +1,8 @@
 import { RequestHandler } from "express";
 import { AppError } from "../error";
 import authServiceModule from "./auth-services";
+import { validateBody } from "./middleware";
+import { newUserValidationSchema } from "./validate-input";
 
 //TODO add validation middleware to handlers.
 
@@ -23,15 +25,18 @@ export const authController = (authServices = authServiceModule) => {
     }
   };
 
-  const postRegister: RequestHandler = async (req, res, next) => {
-    try {
-      const newUser = await authServices.registerUser(req.body);
-      const accessToken = authServices.generateAccessToken(newUser);
-      res.json({ user: newUser, accessToken: accessToken });
-    } catch (err) {
-      next(err);
+  const postRegister: RequestHandler[] = [
+    validateBody(newUserValidationSchema),
+    async (req, res, next) => {
+      try {
+        const newUser = await authServices.registerUser(req.body);
+        const accessToken = authServices.generateAccessToken(newUser);
+        res.json({ user: newUser, accessToken: accessToken });
+      } catch (err) {
+        next(err);
+      }
     }
-  };
+  ];
 
   const postVerify: RequestHandler = async (req, res, next) => { };
 
