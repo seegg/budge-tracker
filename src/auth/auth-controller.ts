@@ -6,13 +6,18 @@ import authServiceModule from "./auth-services";
 
 export const authController = (authServices = authServiceModule) => {
 
+  /**
+   * Login via email and password
+   */
   const postLogin: RequestHandler = async (req, res, next) => {
     try {
-      console.log('login');
       const { email, password } = req.body;
       const accessToken = await authServices.verifyByEmail(email, password);
-      if (!accessToken) throw new AppError('login', 401, 'incorrect email or password', true);
-      res.json({ accessToken });
+      if (!accessToken) {
+        throw new AppError('login', 401, 'incorrect email or password', true);
+      } else {
+        res.json({ accessToken });
+      }
     } catch (err) {
       next(err);
     }

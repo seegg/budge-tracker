@@ -27,8 +27,8 @@ export const authServices = (jwt = jsonwebtoken,
       const { jwtKey } = appConfig;
       return jwt.verify(token, jwtKey);
     } catch (err) {
-      if (err instanceof AppError && err.isOperational) throw err;
-      throw new AppError('parse token', 403, 'unable to parse access token', true);
+      // if (err instanceof AppError && err.isOperational) throw err;
+      throw new AppError('parse token', 500, 'unable to parse access token', true);
     }
   };
 
@@ -40,14 +40,13 @@ export const authServices = (jwt = jsonwebtoken,
     try {
       //if email and password is verified, generate access token from userinfo.
       if (await passwordServices.verifyUserPasswordByEmail(email, password)) {
-        console.log('correct');
         const user = await userServices.getUserByEmail(email);
         return generateAccessToken(user);
       } else {
         return null;
       };
     } catch (err) {
-      if (err instanceof AppError && err.isOperational) throw err;
+      // if (err instanceof AppError && err.isOperational) throw err;
       throw new AppError('login', 500, 'error while processing credentials', true);
     }
   };
@@ -57,7 +56,7 @@ export const authServices = (jwt = jsonwebtoken,
       const user = await userServices.addUser({ name, password, email });
       return user;
     } catch (err) {
-      if (err instanceof AppError && err.isOperational) throw err;
+      // if (err instanceof AppError && err.isOperational) throw err;
       throw new AppError('register', 500, 'error creating new user', true);
     }
   };
