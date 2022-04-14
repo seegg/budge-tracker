@@ -15,6 +15,7 @@ export const authServices = (jwt = jsonwebtoken,
       const { jwtKey } = appConfig;
       return jwt.sign(user, jwtKey, { expiresIn });
     } catch (err) {
+      console.log(err);
       throw new AppError('auth services', 500, 'error generating access token', true);
     }
   };
