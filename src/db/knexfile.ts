@@ -4,7 +4,6 @@ import path from 'path';
 const migDir = path.join(__dirname, 'migrations');
 const seedDir = path.join(__dirname, 'seeds');
 
-console.log(migDir, seedDir);
 
 const config: { [key: string]: Knex.Config } = {
   development: {
@@ -20,7 +19,7 @@ const config: { [key: string]: Knex.Config } = {
       }
     },
     connection: {
-      filename: "./dev.sqlite3"
+      filename: path.join(__dirname, './dev.sqlite3')
     },
     useNullAsDefault: true,
     migrations: {
@@ -45,10 +44,10 @@ const config: { [key: string]: Knex.Config } = {
     },
     useNullAsDefault: true,
     migrations: {
-      directory: migDir
+      directory: path.join(__dirname, 'migrations')
     },
     seeds: {
-      directory: seedDir
+      directory: path.join(__dirname, 'seeds')
     }
   },
 

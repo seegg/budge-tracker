@@ -1,12 +1,15 @@
 import { RequestHandler } from "express";
 import authServiceModule from "./auth-services";
 
+//TODO add validation middleware to handlers.
+
 export const authController = (authServices = authServiceModule) => {
 
   const postLogin: RequestHandler = async (req, res, next) => {
     try {
+      console.log('login');
       const { email, password } = req.body;
-      const accessToken = authServices.verifyByEmail(email, password);
+      const accessToken = await authServices.verifyByEmail(email, password);
       res.json({ accessToken });
     } catch (err) {
       next(err);
@@ -15,7 +18,9 @@ export const authController = (authServices = authServiceModule) => {
 
   const postRegister: RequestHandler = async (req, res, next) => {
     try {
-
+      const newUser = await authServices.registerUser(req.body);
+      const accessToken = authServices.generateAccessToken(newUser);
+      res.json({ user: newUser, accessToken: accessToken });
     } catch (err) {
       next(err);
     }

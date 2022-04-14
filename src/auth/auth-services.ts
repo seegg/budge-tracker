@@ -5,7 +5,6 @@ import { AppError } from '../error';
 import { passwordServices as pwServicesModule } from './password';
 import { userServices as userServicesModuel } from '../user';
 
-
 export const authServices = (jwt = jsonwebtoken,
   passwordServices = pwServicesModule,
   userServices = userServicesModuel,
@@ -39,7 +38,8 @@ export const authServices = (jwt = jsonwebtoken,
   const verifyByEmail = async (email: string, password: string) => {
     try {
       //if email and password is verified, generate access token from userinfo.
-      if (await passwordServices.verifyUserPasswordByEmail(email, password)) {
+      const isVerified = await passwordServices.verifyUserPasswordByEmail(email, password);
+      if (isVerified) {
         const user = await userServices.getUserByEmail(email);
         return generateAccessToken(user);
       } else {
@@ -51,8 +51,14 @@ export const authServices = (jwt = jsonwebtoken,
     }
   };
 
-  const registerUser = async (email: string, name: string, password: string) => {
-
+  const registerUser = async ({ name, email, password }: { email: string, name: string, password: string }) => {
+    try {
+      const user = await userServices.addUser({ name, password, email });
+      return user;
+    } catch (err) {
+      if (err instanceof AppError && err.isOperational) throw err;
+      throw new AppError('register', 500, 'error creating new user', true);
+    }
   };
 
   return {

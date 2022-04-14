@@ -17,7 +17,7 @@ export const userServices = (userDAL = userDB, passwordServices = passwordServic
     async addUser({ name, email, password }: { name: string, email: string, password: string }) {
       try {
         const id = idGenerator();
-        const newUser = { name, email, id };
+        const newUser: User = { name, email, id, verified: false };
         const salt = passwordServices.generateSalt();
         const passwordHash = passwordServices.hashPassword(password, salt);
         await userDAL.insertUser(<User>newUser, passwordHash, salt);
@@ -50,7 +50,7 @@ export const userServices = (userDAL = userDB, passwordServices = passwordServic
         } else if (id) {
           user = await getUserByID(id);
         } else {
-          throw new AppError('user services', 500, 'error finding user', true);
+          throw new AppError('user services', 422, 'wrong input', true);
         }
         if (!user) throw new AppError('user services', 404, 'that user does not exist', true);
         return user;
