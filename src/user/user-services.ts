@@ -2,7 +2,7 @@ import { User } from "./user-types";
 import { v4 as uuidv4 } from 'uuid';
 import { AppError } from "../error";
 import { passwordServices as passwordServiceModule } from "../auth/password";
-import { getUserByEmail, getUserByID, userDB } from './user-repo';
+import userDB, { getUserByEmail, getUserByID } from './user-repo';
 
 /**
  * create user services with dependencies as parameters
@@ -14,10 +14,10 @@ export const userServices = (userDAL = userDB, passwordServices = passwordServic
      * Add a new user
      * @returns return user if successful.
      */
-    async addUser(newUser: Partial<User>, password: string) {
+    async addUser({ name, email, password }: { name: string, email: string, password: string }) {
       try {
         const id = idGenerator();
-        newUser.id = id;
+        const newUser = { name, email, id };
         const salt = passwordServices.generateSalt();
         const passwordHash = passwordServices.hashPassword(password, salt);
         await userDAL.insertUser(<User>newUser, passwordHash, salt);

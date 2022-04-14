@@ -36,7 +36,7 @@ export const authServices = (jwt = jsonwebtoken,
   /**
    * Generate and return an access token if credentials are correct.
    */
-  const logInByEmail = async (email: string, password: string) => {
+  const verifyByEmail = async (email: string, password: string) => {
     try {
       //if email and password is verified, generate access token from userinfo.
       if (await passwordServices.verifyUserPasswordByEmail(email, password)) {
@@ -58,7 +58,7 @@ export const authServices = (jwt = jsonwebtoken,
   return {
     generateAccessToken,
     parseAccessToken,
-    logInByEmail,
+    verifyByEmail,
     registerUser
   };
 };

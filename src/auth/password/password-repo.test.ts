@@ -1,7 +1,6 @@
 import knex from 'knex';
 import config from '../../db/knexfile';
 import pwRepo from './password-repo';
-import path from 'path';
 
 let testDB = knex(config.test);
 

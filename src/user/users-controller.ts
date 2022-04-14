@@ -15,8 +15,7 @@ export const userHandlers = (userServices = userSerivcesModule) => {
 
   const postUser: RequestHandler = async (req, res, next) => {
     try {
-      const { user, password } = req.body;
-      const newUser = await userServices.addUser(user, password);
+      const newUser = await userServices.addUser(req.body);
       res.json(newUser);
     } catch (err) {
       next(err);

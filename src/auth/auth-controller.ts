@@ -6,7 +6,7 @@ export const authController = (authServices = authServiceModule) => {
   const postLogin: RequestHandler = async (req, res, next) => {
     try {
       const { email, password } = req.body;
-      const accessToken = authServices.logInByEmail(email, password);
+      const accessToken = authServices.verifyByEmail(email, password);
       res.json({ accessToken });
     } catch (err) {
       next(err);

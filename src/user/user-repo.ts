@@ -72,7 +72,7 @@ export const updateUser = async (userID: string, newUser: Partial<User>, db = co
   }
 }
 
-export const userDB = {
+export default {
   updateUser,
   insertUser,
   deleteUserByEmail,

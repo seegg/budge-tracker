@@ -27,7 +27,7 @@ export const passwordServices = (passwordHashService = pbkdf2Sync, generateByete
     try {
       const passwordDetails = await pwRepo.getPasswordDetailsByEmail(email);
       const pwHash = hashPassword(password, passwordDetails.salt);
-      return pwHash === passwordDetails.passwordHash;
+      return pwHash === passwordDetails.password_hash;
     } catch (err) {
       throw new AppError('password service', 500, 'error verifying password', true);
     }
@@ -40,7 +40,7 @@ export const passwordServices = (passwordHashService = pbkdf2Sync, generateByete
     try {
       const passwordDetails = await pwRepo.getPasswordDetails(userID);
       const pwHash = hashPassword(password, passwordDetails.salt);
-      return pwHash === passwordDetails.passwordHash;
+      return pwHash === passwordDetails.password_hash;
     } catch (err) {
       throw new AppError('password service', 500, 'error verifying password', true);
     }
