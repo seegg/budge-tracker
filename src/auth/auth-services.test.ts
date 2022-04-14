@@ -1,4 +1,4 @@
-import auth, { authServices } from "./auth-services";
+import { authServices } from "./auth-services";
 import knex from 'knex';
 import config from '../db/knexfile';
 import appConfig from '../config';
@@ -12,8 +12,6 @@ import { userServices } from '../user/user-services';
 import { User } from "../user";
 
 let testDB = knex(config.test);
-
-console.log(appConfig);
 
 beforeAll(async () => {
   await testDB.migrate.latest();
