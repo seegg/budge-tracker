@@ -1,6 +1,10 @@
 import type { Knex } from "knex";
+import path from 'path';
 
-// Update with your config settings.
+const migDir = path.join(__dirname, 'migrations');
+const seedDir = path.join(__dirname, 'seeds');
+
+console.log(migDir, seedDir);
 
 const config: { [key: string]: Knex.Config } = {
   development: {
@@ -41,8 +45,10 @@ const config: { [key: string]: Knex.Config } = {
     },
     useNullAsDefault: true,
     migrations: {
-      tableName: 'migrations',
-      stub: 'migration.stub.ts'
+      directory: migDir
+    },
+    seeds: {
+      directory: seedDir
     }
   },
 
