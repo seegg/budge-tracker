@@ -28,22 +28,22 @@ export const authServices = (jwt = jsonwebtoken,
       return jwt.verify(token, jwtKey);
     } catch (err) {
       if (err instanceof AppError && err.isOperational) throw err;
-      throw new AppError('parse token', 403, 'unable to verify access token', true);
+      throw new AppError('parse token', 403, 'unable to parse access token', true);
     }
   };
 
   /**
    * Generate and return an access token if credentials are correct.
+   * return null if credentials are incorrect.
    */
   const verifyByEmail = async (email: string, password: string) => {
     try {
       //if email and password is verified, generate access token from userinfo.
-      const isVerified = await passwordServices.verifyUserPasswordByEmail(email, password);
-      if (isVerified) {
+      if (await passwordServices.verifyUserPasswordByEmail(email, password)) {
         const user = await userServices.getUserByEmail(email);
         return generateAccessToken(user);
       } else {
-        throw new AppError('login', 401, 'wrong username or password', true);
+        return null;
       };
     } catch (err) {
       if (err instanceof AppError && err.isOperational) throw err;

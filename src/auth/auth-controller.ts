@@ -1,4 +1,5 @@
 import { RequestHandler } from "express";
+import { AppError } from "../error";
 import authServiceModule from "./auth-services";
 
 //TODO add validation middleware to handlers.
@@ -10,6 +11,7 @@ export const authController = (authServices = authServiceModule) => {
       console.log('login');
       const { email, password } = req.body;
       const accessToken = await authServices.verifyByEmail(email, password);
+      if (!accessToken) throw new AppError('login', 401, 'incorrect email or password', true);
       res.json({ accessToken });
     } catch (err) {
       next(err);
