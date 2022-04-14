@@ -15,7 +15,6 @@ export const authServices = (jwt = jsonwebtoken,
       const { jwtKey } = appConfig;
       return jwt.sign(user, jwtKey, { expiresIn });
     } catch (err) {
-      console.log(err);
       throw new AppError('auth services', 500, 'error generating access token', true);
     }
   };
@@ -41,6 +40,7 @@ export const authServices = (jwt = jsonwebtoken,
     try {
       //if email and password is verified, generate access token from userinfo.
       if (await passwordServices.verifyUserPasswordByEmail(email, password)) {
+        console.log('correct');
         const user = await userServices.getUserByEmail(email);
         return generateAccessToken(user);
       } else {
