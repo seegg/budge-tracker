@@ -6,7 +6,10 @@ const TABLE_NAME = 'passwords';
  */
 export const up = async (knex: Knex) => {
   await knex.schema.createTable(TABLE_NAME, (table) => {
-    table.string('user_id').references('users.id').onDelete('CASCADE');
+    table.string('user_id')
+      .references('users.id')
+      .deferrable('deferred')
+      .onDelete('CASCADE');
     table.string('password_hash');
     table.string('salt');
     table.primary(['user_id']);

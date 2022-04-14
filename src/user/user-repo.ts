@@ -24,13 +24,19 @@ export const userRepo = (db = connection) => {
   };
 
   /**
-   * User a transaction to insert both a new user and associated password hash and salt
+   * Use a transaction to insert a new user and the associated password hash and salt
    */
   const insertUser = async (newUser: User, passwordHash: string, salt: string) => {
     try {
       await db.transaction(async trx => {
-        const [id] = await trx('users').insert(newUser, 'id');
-        await trx('passwords').insert({ user_id: id, password_hash: passwordHash, salt });
+
+        const [{ id }] = await db('users')
+          .insert(newUser, 'id')
+          .transacting(trx);
+
+        await db('passwords')
+          .insert({ user_id: id, password_hash: passwordHash, salt })
+          .transacting(trx);
       });
     } catch (err) {
       console.error(err);

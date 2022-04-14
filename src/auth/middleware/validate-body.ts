@@ -12,7 +12,6 @@ const schema = Joi.object().keys()
 const validateBody = (schema: ObjectSchema): RequestHandler => {
   return (req, res, next) => {
     const { error, value } = schema.validate(req.body);
-    console.log('error', error, 'value', value);
     if (error) {
       const errorMessage = error.details.map(detail => detail.message).join(', ');
       return next(new AppError('validation error', 400, errorMessage, true));

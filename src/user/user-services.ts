@@ -16,6 +16,11 @@ export const userServices = (userDAL = userDB, passwordServices = passwordServic
      */
     async addUser({ name, email, password }: { name: string, email: string, password: string }) {
       try {
+        //check if the email is available
+        if (await userDAL.getUserByEmail(email)) {
+          throw new AppError('add user', 400, 'email already in use', true);
+        }
+        //generate uuid and add it to user object. salt and hash the password.
         const id = idGenerator();
         const newUser: User = { name, email, id, verified: false };
         const salt = passwordServices.generateSalt();
@@ -23,6 +28,7 @@ export const userServices = (userDAL = userDB, passwordServices = passwordServic
         await userDAL.insertUser(<User>newUser, passwordHash, salt);
         return newUser;
       } catch (err) {
+        if (err instanceof AppError && err.isOperational) throw err;
         throw new AppError('addUser', 500, 'error adding user', true);
       }
     },
