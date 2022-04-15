@@ -20,4 +20,9 @@ const errorReqHandler: ErrorRequestHandler = async (err, req, res, next) => {
 };
 server.use(errorReqHandler);
 
+process.on('uncaughtException', (error) => {
+  console.log(error);
+  process.exit();
+})
+
 export default server;

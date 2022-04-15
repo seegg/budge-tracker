@@ -1,4 +1,3 @@
-
 import { RequestHandler } from "express"
 import Joi, { ObjectSchema } from "joi"
 import { AppError } from "../../error"

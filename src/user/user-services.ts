@@ -86,6 +86,26 @@ export const userServices = (userDAL = userDB, passwordServices = passwordServic
       } catch (err) {
         throw new AppError('updateUser', 500, 'error updating user', true);
       }
+    },
+
+    /**
+   * Change user password
+   * @param id 
+   * @param oldPassword current password.
+   * @param newPassword password to be change to.
+   */
+    async changePassword(id: string, oldPassword: string, newPassword: string) {
+      try {
+        if (await passwordServices.verifyUserPasswordByID(id, oldPassword)) {
+          await passwordServices.changePassword(id, newPassword);
+          return true;
+        } else {
+          throw new AppError('change password', 400, 'incorrect password', true);
+        }
+      } catch (err) {
+        if (err instanceof AppError && err.isOperational) throw err;
+        throw new AppError('password service', 500, 'error changing password', true);
+      }
     }
   }
 

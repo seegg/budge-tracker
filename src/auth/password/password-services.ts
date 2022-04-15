@@ -38,22 +38,23 @@ export const passwordServices = (passwordHashService = pbkdf2Sync, generateByete
    */
   const verifyUserPasswordByID = async (userID: string, password: string) => {
     try {
-      const passwordDetails = await pwRepo.getPasswordDetails(userID);
-      const pwHash = hashPassword(password, passwordDetails.salt);
-      return pwHash === passwordDetails.password_hash;
+      const { password_hash, salt } = await pwRepo.getPasswordDetails(userID);
+      const pwHash = hashPassword(password, salt);
+      return pwHash === password_hash;
     } catch (err) {
       throw new AppError('password service', 500, 'error verifying password', true);
     }
   };
 
-  const changePassword = async (userID: string, oldPassword: string, newPassword: string) => {
+  /**
+   * Hash and update a user's password.
+   */
+  const changePassword = async (userID: string, newPassword: string) => {
     try {
-      if (await verifyUserPasswordByID(userID, oldPassword)) {
-        await pwRepo.updatePassword(userID, newPassword);
-        return true;
-      } else {
-        return false;
-      }
+      const { salt } = await pwRepo.getPasswordDetails(userID);
+      const newPWHash = hashPassword(newPassword, salt);
+      await pwRepo.updatePassword(userID, newPWHash);
+      return true;
     } catch (err) {
       throw new AppError('password service', 500, 'error changing password', true);
     }

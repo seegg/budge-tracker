@@ -11,8 +11,7 @@ export const authController = (authServices = authServiceModule) => {
   /**
    * Login via email and password
    */
-  const postLogin: RequestHandler[] = [
-    validateBody(validateLogin),
+  const postLogin: RequestHandler =
     async (req, res, next) => {
       try {
         const { email, password } = req.body;
@@ -26,10 +25,9 @@ export const authController = (authServices = authServiceModule) => {
         next(err);
       }
     }
-  ];
+    ;
 
-  const postRegister: RequestHandler[] = [
-    validateBody(validateNewUser),
+  const postRegister: RequestHandler =
     async (req, res, next) => {
       try {
         const newUser = await authServices.registerUser(req.body);
@@ -39,7 +37,7 @@ export const authController = (authServices = authServiceModule) => {
         next(err);
       }
     }
-  ];
+    ;
 
   const postVerify: RequestHandler = async (req, res, next) => { };
 
