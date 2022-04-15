@@ -1,8 +1,6 @@
 import { RequestHandler } from "express";
 import { AppError } from "../error";
 import authServiceModule from "./auth-services";
-import { validateBody } from "./middleware";
-import { validateNewUser, validateLogin } from "./validate-input";
 
 //TODO add validation middleware to handlers.
 

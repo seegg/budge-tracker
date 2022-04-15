@@ -18,7 +18,7 @@ export const userHandlers = (userServices = userSerivcesModule) => {
     try {
       const { id } = req.params;
       const user = await userServices.getUserByID(id);
-      if (user === null) throw new AppError('not found', 404, 'user does not exists', true);
+      if (user === null) throw new AppError('not found', 404, "that user doesn't exist", true);
       res.status(200).json(user);
     } catch (err) {
       next(err);

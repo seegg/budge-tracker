@@ -28,7 +28,7 @@ export const authServices = (jwt = jsonwebtoken,
       return jwt.verify(token, jwtKey);
     } catch (err) {
       // if (err instanceof AppError && err.isOperational) throw err;
-      throw new AppError('parse token', 500, 'unable to parse access token', true);
+      throw new AppError('parse token', 401, 'not authenticated', true);
     }
   };
 
@@ -47,7 +47,7 @@ export const authServices = (jwt = jsonwebtoken,
       };
     } catch (err) {
       // if (err instanceof AppError && err.isOperational) throw err;
-      throw new AppError('login', 500, 'error while processing credentials', true);
+      throw new AppError('login', 500, 'error during login', true);
     }
   };
 

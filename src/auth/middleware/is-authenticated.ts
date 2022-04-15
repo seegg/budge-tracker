@@ -13,7 +13,6 @@ export const authenticate = (authServices = authServiceModule): RequestHandler =
     try {
       const token = req.headers.authorization?.split(' ')[1]; //get token from authorization header
       if (!token) throw new AppError('unauthenticated', 401, 'not authenticated', true);
-
       //parse token and attach user object to locals for subsequent requests.
       const user = authServices.parseAccessToken(token);
       res.locals.user = user;
