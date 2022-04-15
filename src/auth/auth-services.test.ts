@@ -12,10 +12,18 @@ import { userServices } from '../user/user-services';
 import { User } from "../user";
 
 let testDB = knex(config.test);
+let auth: any;
+let userServiceT: any;
 
 beforeAll(async () => {
   await testDB.migrate.latest();
   await testDB.seed.run();
+  //set up auth services with dependencies.
+  const pwRepo = passwordRepo(testDB);
+  const pwServices = passwordServices(pbkdf2Sync, randomBytes, pwRepo);
+  const userRepoT = userRepo(testDB);
+  userServiceT = userServices(userRepoT, pwServices, uuidv4);
+  auth = authServices(jwt, pwServices, userServiceT, appConfig);
 });
 
 afterAll(() => {
@@ -25,11 +33,6 @@ afterAll(() => {
 describe('tests for auth service functions', () => {
   describe('verifyByEmail', () => {
     it('should return an access token given correct email and password', async () => {
-      const pwRepo = passwordRepo(testDB);
-      const pwServices = passwordServices(pbkdf2Sync, randomBytes, pwRepo);
-      const userRepoT = userRepo(testDB);
-      const userServiceT = userServices(userRepoT, pwServices, uuidv4);
-      const auth = authServices(jwt, pwServices, userServiceT, appConfig);
       try {
         const jwtSecret = appConfig.jwtKey;
         const email = 'bob@myemail.com';
@@ -39,6 +42,30 @@ describe('tests for auth service functions', () => {
       } catch (err) {
         expect(err).toBeFalsy();
       }
-    })
+    });
+
+    it('should return null given incorrect login details', async () => {
+      const email = 'incorrect@myemail.com';
+      const password = 'somewrongpassword';
+      const token = await auth.verifyByEmail(email, password);
+      expect(token).toBeNull();
+    });
   });
+
+  describe('generateAccessToken', () => {
+    it('should generate a jwt given payload', () => {
+      const user: User = { id: 'userid12345', name: 'test123', email: 'testuser@test.com', verified: false };
+      const token = auth.generateAccessToken(user);
+      expect(token).toBeTruthy();
+    });
+  });
+
+  describe('registerUser', () => {
+    it('should register a new user to the database given valid input', async () => {
+      const user = { name: 'test3', email: 'test3@test3.com', password: 'test3password' };
+      const newUser = await auth.registerUser(user);
+      const checkUser = await userServiceT.getUserByEmail(newUser.email);
+      expect(checkUser.name).toBe(user.name);
+    })
+  })
 })

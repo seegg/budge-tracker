@@ -26,6 +26,7 @@ export const passwordServices = (passwordHashService = pbkdf2Sync, generateByete
   const verifyUserPasswordByEmail = async (email: string, password: string) => {
     try {
       const passwordDetails = await pwRepo.getPasswordDetailsByEmail(email);
+      if (!passwordDetails) return false;
       const pwHash = hashPassword(password, passwordDetails.salt);
       return pwHash === passwordDetails.password_hash;
     } catch (err) {

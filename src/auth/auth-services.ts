@@ -44,7 +44,7 @@ export const authServices = (jwt = jsonwebtoken,
         return generateAccessToken(user);
       } else {
         return null;
-      };
+      }
     } catch (err) {
       // if (err instanceof AppError && err.isOperational) throw err;
       throw new AppError('login', 500, 'error during login', true);
