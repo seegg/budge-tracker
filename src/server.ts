@@ -4,6 +4,7 @@ import { userAPI } from './user';
 import { authAPI } from './auth';
 
 const server = express();
+server.use(express.urlencoded());
 server.use(express.json());
 
 server.use('/api/v1/users', userAPI);
@@ -20,6 +21,7 @@ const errorReqHandler: ErrorRequestHandler = async (err, req, res, next) => {
 };
 server.use(errorReqHandler);
 
+//exit on uncaught errors
 process.on('uncaughtException', (error) => {
   console.log(error);
   process.exit();

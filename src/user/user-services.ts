@@ -36,6 +36,7 @@ export const userServices = (userDAL = userDB, passwordServices = passwordServic
     async deleteUser(user: User) {
       try {
         let result = 0;
+        //checks if id or email is provided in user object, user either to delete.
         if (user.id) {
           result = await userDAL.deleteUserByID(user.id);
         } else if (user.email) {

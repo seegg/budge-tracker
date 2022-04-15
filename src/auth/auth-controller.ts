@@ -2,8 +2,6 @@ import { RequestHandler } from "express";
 import { AppError } from "../error";
 import authServiceModule from "./auth-services";
 
-//TODO add validation middleware to handlers.
-
 export const authController = (authServices = authServiceModule) => {
 
   /**
