@@ -1,29 +1,27 @@
-import { authServices } from "./auth-services";
+import { AuthServices } from "./auth-services";
 import knex from 'knex';
 import config from '../db/knexfile';
 import appConfig from '../config';
 import { passwordRepo } from './password/password-repo';
-import { passwordServices } from './password/password-services';
+import { PasswordServices } from './password/password-services';
 import jwt from 'jsonwebtoken';
-import { pbkdf2Sync, randomBytes } from 'crypto';
-import { v4 as uuidv4 } from 'uuid';
 import { userRepo } from '../user/user-repo';
-import { userServices } from '../user/user-services';
+import { UserServices } from '../user';
 import { User } from "../user";
 
 let testDB = knex(config.test);
 let auth: any;
-let userServiceT: any;
+let userService: any;
 
 beforeAll(async () => {
   await testDB.migrate.latest();
   await testDB.seed.run();
   //set up auth services with dependencies.
   const pwRepo = passwordRepo(testDB);
-  const pwServices = passwordServices(pbkdf2Sync, randomBytes, pwRepo);
+  const pwServices = new PasswordServices(pwRepo);
   const userRepoT = userRepo(testDB);
-  userServiceT = userServices(userRepoT, pwServices, uuidv4);
-  auth = authServices(jwt, pwServices, userServiceT, appConfig);
+  userService = new UserServices(userRepoT, pwServices);
+  auth = new AuthServices(userService, pwServices);
 });
 
 afterAll(() => {
@@ -64,7 +62,7 @@ describe('tests for auth service functions', () => {
     it('should register a new user to the database given valid input', async () => {
       const user = { name: 'test3', email: 'test3@test3.com', password: 'test3password' };
       const newUser = await auth.registerUser(user);
-      const checkUser = await userServiceT.getUserByEmail(newUser.email);
+      const checkUser = await userService.getUserByEmail(newUser.email);
       expect(checkUser.name).toBe(user.name);
     })
   })

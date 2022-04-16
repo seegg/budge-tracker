@@ -2,18 +2,32 @@ import jsonwebtoken from 'jsonwebtoken';
 import { User } from '../user/user-types';
 import config from '../config';
 import { AppError } from '../error';
-import { passwordServices as pwServicesModule } from './password';
-import { userServices as userServicesModuel } from '../user';
+import { PasswordServices, passwordServices } from './password';
+import { UserServices, userServices } from '../user';
+export class AuthServices {
+  private userServices;
+  private passwordServices;
+  private appConfig;
+  private jwt;
 
-export const authServices = (jwt = jsonwebtoken,
-  passwordServices = pwServicesModule,
-  userServices = userServicesModuel,
-  appConfig = config) => {
+  /**
+   * construct Auth services with dependencies
+   * @param userServices 
+   * @param passwordServices 
+   * @param appConfig app configs
+   * @param jwt json web token
+   */
+  constructor(userServices: UserServices, passwordServices: PasswordServices, appConfig = config, jwt = jsonwebtoken) {
+    this.userServices = userServices;
+    this.passwordServices = passwordServices;
+    this.appConfig = appConfig;
+    this.jwt = jsonwebtoken;
+  }
 
-  const generateAccessToken = (user: User, expiresIn: number = 86400) => {
+  async generateAccessToken(user: User, expiresIn: number = 86400) {
     try {
-      const { jwtKey } = appConfig;
-      return jwt.sign(user, jwtKey, { expiresIn });
+      const { jwtKey } = this.appConfig;
+      return await this.jwt.sign(user, jwtKey, { expiresIn });
     } catch (err) {
       throw new AppError('auth services', 500, 'error generating access token', true);
     }
@@ -22,10 +36,10 @@ export const authServices = (jwt = jsonwebtoken,
   /**
    * parse and return the payload in a jwt as plain text.
    */
-  const parseAccessToken = (token: string) => {
+  async parseAccessToken(token: string) {
     try {
-      const { jwtKey } = appConfig;
-      return jwt.verify(token, jwtKey);
+      const { jwtKey } = this.appConfig;
+      return await this.jwt.verify(token, jwtKey);
     } catch (err) {
       // if (err instanceof AppError && err.isOperational) throw err;
       throw new AppError('parse token', 401, 'not authenticated', true);
@@ -36,12 +50,12 @@ export const authServices = (jwt = jsonwebtoken,
    * Generate and return an access token if credentials are correct.
    * return null if credentials are incorrect.
    */
-  const verifyByEmail = async (email: string, password: string) => {
+  async verifyByEmail(email: string, password: string) {
     try {
       //if email and password is verified, generate access token from userinfo.
-      if (await passwordServices.verifyUserPasswordByEmail(email, password)) {
-        const user = await userServices.getUserByEmail(email);
-        return generateAccessToken(user);
+      if (await this.passwordServices.verifyPasswordByEmail(email, password)) {
+        const user = await this.userServices.getUserByEmail(email);
+        return this.generateAccessToken(user);
       } else {
         return null;
       }
@@ -51,22 +65,17 @@ export const authServices = (jwt = jsonwebtoken,
     }
   };
 
-  const registerUser = async ({ name, email, password }: { email: string, name: string, password: string }) => {
+  async registerUser({ name, email, password }: { email: string, name: string, password: string }) {
     try {
-      const user = await userServices.addUser({ name, password, email });
+      const user = await this.userServices.addUser({ name, password, email });
       return user;
     } catch (err) {
       // if (err instanceof AppError && err.isOperational) throw err;
       throw new AppError('register', 500, 'error creating new user', true);
     }
   };
+}
 
-  return {
-    generateAccessToken,
-    parseAccessToken,
-    verifyByEmail,
-    registerUser
-  };
-};
+const defaulAuthServices = new AuthServices(userServices, passwordServices, config, jsonwebtoken);
 
-export default authServices();
+export default defaulAuthServices;

@@ -1,8 +1,6 @@
-import { userServices as testUserServices } from './user-services';
-import { passwordServices } from '../auth/password/password-services';
+import { UserServices } from './user-services';
+import { PasswordServices } from '../auth/password/password-services';
 import { passwordRepo } from '../auth/password/password-repo';
-import { pbkdf2Sync, randomBytes } from 'crypto';
-import { v4 as uuidv4 } from 'uuid';
 import knex from 'knex';
 import knexConfig from '../db/knexfile';
 import { userRepo } from './user-repo';
@@ -22,8 +20,8 @@ describe('user services', () => {
   //set up user services
   const userDB = userRepo(testDB);
   const pwDB = passwordRepo(testDB);
-  const pwServices = passwordServices(pbkdf2Sync, randomBytes, pwDB);
-  const userServices = testUserServices(userDB, pwServices);
+  const passwordServices = new PasswordServices(pwDB);
+  const userServices = new UserServices(userDB, passwordServices);
   describe('addUser', () => {
     it('should add a new user given valid input', async () => {
       const user = { name: 'test1', email: 'test1@testmail.com', password: 'testpassword123' };
