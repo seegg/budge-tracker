@@ -4,12 +4,11 @@ import { userAPI } from './user';
 import { authAPI } from './auth';
 
 const server = express();
-server.use(express.urlencoded());
+server.use(express.urlencoded({ extended: false }));
 server.use(express.json());
 
 server.use('/api/v1/users', userAPI);
 server.use('/api/v1/auth', authAPI);
-
 //404
 server.use('/*', (req, res, next) => {
   next(new AppError('not found', 404, 'not found', true));

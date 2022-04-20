@@ -97,7 +97,8 @@ export class UserServices {
   }
 
   /**
-   * 
+   * update user  details
+   * @param userID 
    * @param userDetails 
    * @returns 
    */

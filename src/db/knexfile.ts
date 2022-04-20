@@ -4,7 +4,6 @@ import path from 'path';
 const migDir = path.join(__dirname, 'migrations');
 const seedDir = path.join(__dirname, 'seeds');
 
-
 const config: { [key: string]: Knex.Config } = {
   development: {
     client: "better-sqlite3",

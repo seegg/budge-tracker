@@ -5,10 +5,6 @@ import { passwordServices as pwServiceModule } from "../auth/password";
 import { User } from "./user-types";
 
 
-/**
- * 
- * @returns 
- */
 export const userHandlers = (userServices = userSerivcesModule) => {
 
   /**

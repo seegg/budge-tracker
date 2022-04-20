@@ -4,7 +4,7 @@ import authServiceModule from '../auth-services';
 
 /**
  * Middleware to authenticate user using jwt.
- * user is attach to res.locals if valid.
+ * user object is attach to res.locals after authentication.
  * @param authServices auth services module.
  * @returns Request Handler to authenticate using json web token.
  */

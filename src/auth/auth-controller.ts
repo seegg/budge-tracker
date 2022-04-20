@@ -20,8 +20,8 @@ export const authController = (authServices = authServiceModule) => {
       } catch (err) {
         next(err);
       }
-    }
-    ;
+    };
+
 
   const postRegister: RequestHandler =
     async (req, res, next) => {
@@ -32,8 +32,8 @@ export const authController = (authServices = authServiceModule) => {
       } catch (err) {
         next(err);
       }
-    }
-    ;
+    };
+
 
   const postVerify: RequestHandler = async (req, res, next) => { };
 

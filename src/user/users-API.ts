@@ -1,13 +1,23 @@
 import express from 'express';
 import usersController from './users-controller';
 import { isAuthenticated, validateBody } from '../auth/middleware';
+import { validateNewUser } from '.';
 import { validateChangePassword } from '.';
 
 const router = express.Router();
 
-router.get('/id/:id', isAuthenticated, usersController.getUser); //get user by id
-router.post('/add', usersController.postUser); //add new user
+//get user by id
+router.get('/id/:id', isAuthenticated,
+  usersController.getUser);
+
+//add new user
+router.post('/add', validateBody(validateNewUser),
+  usersController.postUser);
+
 //authenticated, validate new password, change password
-router.post('/change-password/', isAuthenticated, validateBody(validateChangePassword), usersController.postChangePassword);
+router.post('/change-password/',
+  isAuthenticated,
+  validateBody(validateChangePassword),
+  usersController.postChangePassword);
 
 export default router;
