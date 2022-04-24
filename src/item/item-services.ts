@@ -9,6 +9,21 @@ export class ItemServices {
     this.itemDAL = itemRepo;
   }
 
+  async getItem(userID: string, itemID: number) {
+    try {
+      const item = await this.itemDAL.getItem(itemID);
+      if (item === null) throw new AppError('', 404, 'no such item', true);
+      if (userID === item.user_id) {
+        return item;
+      } else {
+        throw new AppError('', 400, 'permission denied', true);
+      }
+    } catch (err) {
+      if (err instanceof AppError && err.isOperational) throw err;
+      throw new AppError('', 500, 'could not get item', true);
+    }
+  }
+
   /**
    * Add an user purchase.
    * @param userID 
