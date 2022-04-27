@@ -4,6 +4,7 @@ import config from '../config';
 import { AppError } from '../error';
 import { PasswordServices, passwordServices } from './password';
 import { UserServices, userServices } from '../user';
+
 export class AuthServices {
   private userServices;
   private passwordServices;
