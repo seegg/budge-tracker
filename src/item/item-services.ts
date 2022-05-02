@@ -10,18 +10,14 @@ export class ItemServices {
   }
 
   async getItem(userID: string, itemID: number) {
-    try {
-      const item = await this.itemDAL.getItem(itemID);
-      if (item === null) throw new AppError('', 404, 'no such item', true);
-      if (userID === item.user_id) {
-        return item;
-      } else {
-        throw new AppError('', 400, 'permission denied', true);
-      }
-    } catch (err) {
-      if (err instanceof AppError && err.isOperational) throw err;
-      throw new AppError('', 500, 'could not get item', true);
+    const item = await this.itemDAL.getItem(itemID);
+    if (item === null) throw new AppError('', 404, 'no such item', true);
+    if (userID === item.user_id) {
+      return item;
+    } else {
+      throw new AppError('', 400, 'permission denied', true);
     }
+
   }
 
   /**
@@ -31,13 +27,9 @@ export class ItemServices {
    * @returns 
    */
   async addItem(userID: string, itemDetails: Item) {
-    try {
-      const newItem: Item = { ...itemDetails, user_id: userID };
-      const item = await this.itemDAL.addItem(newItem);
-      return item;
-    } catch (err) {
-      throw new AppError('', 500, 'could not add new item', true);
-    }
+    const newItem: Item = { ...itemDetails, user_id: userID };
+    const item = await this.itemDAL.addItem(newItem);
+    return item;
   }
 
   /**
@@ -46,13 +38,9 @@ export class ItemServices {
    * @param itemDetails items to be added
    */
   async addMultipleItems(userID: string, itemDetails: Item[]) {
-    try {
-      const newItems = itemDetails.map(item => ({ ...item, user_id: userID }));
-      const items = await this.itemDAL.addMultipleItem(newItems);
-      return items;
-    } catch (err) {
-      throw new AppError('', 500, 'could not add new items', true);
-    }
+    const newItems = itemDetails.map(item => ({ ...item, user_id: userID }));
+    const items = await this.itemDAL.addMultipleItem(newItems);
+    return items;
   }
 
   /**
@@ -62,17 +50,13 @@ export class ItemServices {
    * @returns updated item.
    */
   async editItem(userID: string, updateDetails: ItemDBRow) {
-    try {
-      //check user has permission to edit the item.
-      if (await this.isOwnItem(userID, updateDetails.id)) {
-        throw new AppError('', 401, 'you do not have premission to modify this document', true);
-      }
-      const updateItem = this.mapUpdateItem(updateDetails);
-      const item = await this.itemDAL.updateItem(updateDetails.id, updateItem);
-      return item;
-    } catch (err) {
-      throw new AppError('', 500, 'could not update items', true);
+    //check user has permission to edit the item.
+    if (await this.isOwnItem(userID, updateDetails.id)) {
+      throw new AppError('', 401, 'permission denied', true);
     }
+    const updateItem = this.mapUpdateItem(updateDetails);
+    const item = await this.itemDAL.updateItem(updateDetails.id, updateItem);
+    return item;
   }
 
   async deleteItem() {

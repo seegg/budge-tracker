@@ -42,7 +42,7 @@ export const userHandlers = (userServices = userSerivcesModule) => {
       const { id, email } = res.locals.user;
       const { old_password, new_password } = req.body;
       await userServices.changePassword(id, old_password, new_password);
-      res.json({ message: 'password change successful' });
+      res.json({ message: 'success' });
     } catch (err) {
       next(err);
     }

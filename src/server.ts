@@ -14,7 +14,7 @@ server.use('/*', (req, res, next) => {
   next(new AppError('not found', 404, 'not found', true));
 });
 
-//custom error handler
+//catch errors
 const errorReqHandler: ErrorRequestHandler = async (err, req, res, next) => {
   await errorHandler(err, res, next);
 };
