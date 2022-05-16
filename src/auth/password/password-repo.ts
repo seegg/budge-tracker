@@ -6,44 +6,42 @@ interface PasswordRow {
   salt: string
 }
 
-export const passwordRepo = (db = connection) => {
+export class PasswordRepo {
+  private db;
 
-  const getPasswordDetails = async (userID: string) => {
-    const [pwDetails] = await db('passwords').where('user_id', userID);
+  constructor(db = connection) {
+    this.db = db;
+  }
+
+  async getPasswordDetails(userID: string) {
+    const [pwDetails] = await this.db('passwords').where('user_id', userID);
     return pwDetails as PasswordRow || null;
-  };
+  }
 
-  const getPasswordDetailsByEmail = async (email: string) => {
-    const getUserIDSuquery = db('users').where('email', email).select('id');
-    const [pwDetails] = await db('passwords').where('user_id', 'in', getUserIDSuquery);
+  async getPasswordDetailsByEmail(email: string) {
+    const getUserIDSuquery = this.db('users').where('email', email).select('id');
+    const [pwDetails] = await this.db('passwords').where('user_id', 'in', getUserIDSuquery);
     return pwDetails as PasswordRow || null;
-  };
+  }
 
-  const updatePasswordDetails = async (userID: string, newPassword: string, newSalt: string) => {
-    await db('passwords')
+  async updatePasswordDetails(userID: string, newPassword: string, newSalt: string) {
+    return await this.db('passwords')
       .update({ password_hash: newPassword, salt: newSalt })
       .where('user_id', userID);
   }
 
-  const updatePassword = async (userID: string, newPasswordHash: string) => {
-    await db('passwords')
-      .update({ password_hash: newPasswordHash })
+  async updatePassword(userID: string, newPassword: string) {
+    return await this.db('passwords')
+      .update({ password_hash: newPassword })
       .where('user_id', userID);
-  };
+  }
 
-  const updateSalt = async (userID: string, newSalt: string) => {
-    await db('passwords')
+  async updateSalt(userID: string, newSalt: string) {
+    return await this.db('passwords')
       .update({ salt: newSalt })
       .where('user_id', userID);
-  };
+  }
 
-  return {
-    getPasswordDetails,
-    getPasswordDetailsByEmail,
-    updatePassword,
-    updateSalt,
-    updatePasswordDetails,
-  };
 }
 
-export default passwordRepo();
+export default new PasswordRepo();

@@ -1,9 +1,9 @@
 import knex from 'knex';
 import config from '../../db/knexfile';
-import { passwordRepo } from './password-repo';
+import { PasswordRepo } from './password-repo';
 
 let testDB = knex(config.test);
-const pwRepo = passwordRepo(testDB);
+const pwRepo = new PasswordRepo(testDB);
 beforeAll(async () => {
   await testDB.migrate.latest();
 });

@@ -2,10 +2,10 @@ import { AuthServices } from "./auth-services";
 import knex from 'knex';
 import config from '../db/knexfile';
 import appConfig from '../config';
-import { passwordRepo } from './password/password-repo';
+import { PasswordRepo } from './password/password-repo';
 import { PasswordServices } from './password/password-services';
 import jwt from 'jsonwebtoken';
-import { userRepo, UserRepo } from '../user/user-repo';
+import { UserRepo } from '../user/user-repo';
 import { UserServices } from '../user';
 import { User } from "../user";
 
@@ -17,7 +17,7 @@ beforeAll(async () => {
   await testDB.migrate.latest();
   await testDB.seed.run();
   //set up auth services with dependencies.
-  const pwRepo = passwordRepo(testDB);
+  const pwRepo = new PasswordRepo(testDB);
   const pwServices = new PasswordServices(pwRepo);
   const userRepoT = new UserRepo(testDB);
   userService = new UserServices(userRepoT, pwServices);
