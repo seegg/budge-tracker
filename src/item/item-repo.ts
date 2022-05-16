@@ -30,15 +30,10 @@ export class ItemRepo {
    * @returns inserted item
    */
   async addItem(purchaseItem: Item) {
-    try {
-      const [item] = await this.itemDB('items')
-        .insert(purchaseItem)
-        .returning('*');
-      return item as ItemDBRow;
-    } catch (err) {
-      console.error(err);
-      throw new Error('DB Error');
-    }
+    const [item] = await this.itemDB('items')
+      .insert(purchaseItem)
+      .returning('*');
+    return item as ItemDBRow;
   }
 
   /**
@@ -47,26 +42,16 @@ export class ItemRepo {
    * @returns inserted item
    */
   async addMultipleItem(purchaseItems: Item[]) {
-    try {
-      const items = await this.itemDB('items')
-        .insert(purchaseItems)
-        .returning('*');
-      return items as ItemDBRow[];
-    } catch (err) {
-      console.error(err);
-      throw new Error('DB Error');
-    }
+    const items = await this.itemDB('items')
+      .insert(purchaseItems)
+      .returning('*');
+    return items as ItemDBRow[];
   }
 
 
   async getItem(id: number) {
-    try {
-      const [item] = await this.itemDB('items').where('items.id', id);
-      return item as ItemDBRow || null;
-    } catch (err) {
-      console.error(err);
-      throw new Error('DB Error');
-    }
+    const [item] = await this.itemDB('items').where('items.id', id);
+    return item as ItemDBRow || null;
   }
 
   /**
@@ -76,16 +61,11 @@ export class ItemRepo {
    * @returns array of user items.
    */
   async getItems(prevID: number = 0, limit: number = 100) {
-    try {
-      let items = await this.itemDB('items')
-        .where('items.id', '<', prevID)
-        .orderBy('items.id', 'desc')
-        .limit(limit);
-      return items as ItemDBRow[];
-    } catch (err) {
-      console.error(err);
-      throw new Error('DB Error');
-    }
+    let items = await this.itemDB('items')
+      .where('items.id', '<', prevID)
+      .orderBy('items.id', 'desc')
+      .limit(limit);
+    return items as ItemDBRow[];
   }
 
   /**
@@ -96,17 +76,12 @@ export class ItemRepo {
    * @returns array of user items.
    */
   async getUserItems(userID: string, prevID: number = 0, limit: number = 100) {
-    try {
-      let items = await this.itemDB('items')
-        .where('user_id', userID)
-        .andWhere('items.id', '<', prevID)
-        .orderBy('items.id', 'desc')
-        .limit(limit);
-      return items as ItemDBRow[];
-    } catch (err) {
-      console.error(err);
-      throw new Error('DB Error');
-    }
+    let items = await this.itemDB('items')
+      .where('user_id', userID)
+      .andWhere('items.id', '<', prevID)
+      .orderBy('items.id', 'desc')
+      .limit(limit);
+    return items as ItemDBRow[];
   }
 
   /**
@@ -115,14 +90,10 @@ export class ItemRepo {
    * @param itemIDs array of item ids
    */
   async getUserItemList(userID: string, itemIDs: number[]) {
-    try {
-      const items = await this.itemDB('items')
-        .whereIn('items.id', itemIDs)
-        .andWhere('user_id', userID);
-      return items as ItemDBRow[];
-    } catch (err) {
-
-    }
+    const items = await this.itemDB('items')
+      .whereIn('items.id', itemIDs)
+      .andWhere('user_id', userID);
+    return items as ItemDBRow[];
   }
 
   /**
@@ -130,12 +101,7 @@ export class ItemRepo {
    * @param itemID 
    */
   async deleteItem(itemID: number) {
-    try {
-      await this.itemDB('items').where('id', itemID).del();
-    } catch (err) {
-      console.error(err);
-      throw new Error('DB Error');
-    }
+    await this.itemDB('items').where('id', itemID).del();
   }
 
   /**
@@ -144,15 +110,10 @@ export class ItemRepo {
    * @returns number of rows affected.
    */
   async deleteItems(itemIDs: number[]) {
-    try {
-      const results = await this.itemDB('items')
-        .whereIn('id', itemIDs)
-        .del()
-      return results;
-    } catch (err) {
-      console.error(err);
-      throw new Error('DB Error');
-    }
+    const results = await this.itemDB('items')
+      .whereIn('id', itemIDs)
+      .del()
+    return results;
   }
 
   /**
@@ -162,18 +123,12 @@ export class ItemRepo {
    * @returns newly updated item.
    */
   async updateItem(itemID: number, updateItem: Partial<ItemDBRow>) {
-    try {
-      const [result] = await this.itemDB('items')
-        .update(updateItem)
-        .where('id', itemID)
-        .returning('*');
-      return result as ItemDBRow;
-    } catch (err) {
-      console.error(err);
-      throw new Error('DB Error');
-    }
+    const [result] = await this.itemDB('items')
+      .update(updateItem)
+      .where('id', itemID)
+      .returning('*');
+    return result as ItemDBRow;
   }
 }
 
-const defaultRepo = new ItemRepo(connection);
-export default defaultRepo;
+export default new ItemRepo(connection);

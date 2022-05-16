@@ -18,6 +18,7 @@ server.use('/*', (req, res, next) => {
 const errorReqHandler: ErrorRequestHandler = async (err, req, res, next) => {
   await errorHandler(err, res, next);
 };
+
 server.use(errorReqHandler);
 
 //exit on uncaught errors

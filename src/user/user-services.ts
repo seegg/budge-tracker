@@ -2,7 +2,6 @@ import { User } from "./user-types";
 import { v4 as uuidv4 } from 'uuid';
 import { AppError } from "../error";
 import { PasswordServices, passwordServices } from "../auth/password";
-import userDB from './user-repo';
 import userRepo from "./user-repo";
 
 export class UserServices {
@@ -16,7 +15,7 @@ export class UserServices {
    * @param passwordServices password services
    * @param uuid uuid generator;
    */
-  constructor(userDAL = userDB, passwordServices: PasswordServices, uuid: () => string = uuidv4) {
+  constructor(userDAL = userRepo, passwordServices: PasswordServices, uuid: () => string = uuidv4) {
     this.userDAL = userDAL;
     this.passwordServices = passwordServices;
     this.uuid = uuid;

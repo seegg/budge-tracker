@@ -5,7 +5,7 @@ import appConfig from '../config';
 import { passwordRepo } from './password/password-repo';
 import { PasswordServices } from './password/password-services';
 import jwt from 'jsonwebtoken';
-import { userRepo } from '../user/user-repo';
+import { userRepo, UserRepo } from '../user/user-repo';
 import { UserServices } from '../user';
 import { User } from "../user";
 
@@ -19,7 +19,7 @@ beforeAll(async () => {
   //set up auth services with dependencies.
   const pwRepo = passwordRepo(testDB);
   const pwServices = new PasswordServices(pwRepo);
-  const userRepoT = userRepo(testDB);
+  const userRepoT = new UserRepo(testDB);
   userService = new UserServices(userRepoT, pwServices);
   auth = new AuthServices(userService, pwServices);
 });

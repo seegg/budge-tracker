@@ -98,6 +98,4 @@ export class ItemServices {
 
 }
 
-const defaultItemServices = new ItemServices(itemDAL);
-
-export default defaultItemServices;
+export default new ItemServices(itemDAL);

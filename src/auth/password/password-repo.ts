@@ -9,57 +9,32 @@ interface PasswordRow {
 export const passwordRepo = (db = connection) => {
 
   const getPasswordDetails = async (userID: string) => {
-    try {
-      const [pwDetails] = await db('passwords').where('user_id', userID);
-      return pwDetails as PasswordRow || null;
-    } catch (err) {
-      console.error(err);
-      throw new Error('db error');
-    }
+    const [pwDetails] = await db('passwords').where('user_id', userID);
+    return pwDetails as PasswordRow || null;
   };
 
   const getPasswordDetailsByEmail = async (email: string) => {
-    try {
-      const getUserIDSuquery = db('users').where('email', email).select('id');
-      const [pwDetails] = await db('passwords').where('user_id', 'in', getUserIDSuquery);
-      return pwDetails as PasswordRow || null;
-    } catch (err) {
-      console.error(err);
-      throw new Error('db error');
-    }
+    const getUserIDSuquery = db('users').where('email', email).select('id');
+    const [pwDetails] = await db('passwords').where('user_id', 'in', getUserIDSuquery);
+    return pwDetails as PasswordRow || null;
   };
 
   const updatePasswordDetails = async (userID: string, newPassword: string, newSalt: string) => {
-    try {
-      await db('passwords')
-        .update({ password_hash: newPassword, salt: newSalt })
-        .where('user_id', userID);
-    } catch (err) {
-      console.error(err);
-      throw new Error('db error');
-    }
+    await db('passwords')
+      .update({ password_hash: newPassword, salt: newSalt })
+      .where('user_id', userID);
   }
 
   const updatePassword = async (userID: string, newPasswordHash: string) => {
-    try {
-      await db('passwords')
-        .update({ password_hash: newPasswordHash })
-        .where('user_id', userID);
-    } catch (err) {
-      console.error(err);
-      throw new Error('db error');
-    }
+    await db('passwords')
+      .update({ password_hash: newPasswordHash })
+      .where('user_id', userID);
   };
 
   const updateSalt = async (userID: string, newSalt: string) => {
-    try {
-      await db('passwords')
-        .update({ salt: newSalt })
-        .where('user_id', userID);
-    } catch (err) {
-      console.error(err);
-      throw new Error('db error');
-    }
+    await db('passwords')
+      .update({ salt: newSalt })
+      .where('user_id', userID);
   };
 
   return {

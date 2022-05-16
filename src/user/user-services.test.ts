@@ -3,7 +3,7 @@ import { PasswordServices } from '../auth/password/password-services';
 import { passwordRepo } from '../auth/password/password-repo';
 import knex from 'knex';
 import knexConfig from '../db/knexfile';
-import { userRepo } from './user-repo';
+import { UserRepo } from './user-repo';
 
 let testDB = knex(knexConfig.test);
 
@@ -18,7 +18,7 @@ afterAll(async () => {
 
 describe('user services', () => {
   //set up user services
-  const userDB = userRepo(testDB);
+  const userDB = new UserRepo(testDB);
   const pwDB = passwordRepo(testDB);
   const passwordServices = new PasswordServices(pwDB);
   const userServices = new UserServices(userDB, passwordServices);

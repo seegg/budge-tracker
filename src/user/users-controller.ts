@@ -1,8 +1,6 @@
 import { RequestHandler } from "express";
 import { AppError } from "../error";
 import userSerivcesModule from "./user-services";
-import { passwordServices as pwServiceModule } from "../auth/password";
-import { User } from "./user-types";
 
 
 export const userHandlers = (userServices = userSerivcesModule) => {

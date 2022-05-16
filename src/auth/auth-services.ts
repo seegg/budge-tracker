@@ -1,7 +1,6 @@
 import jsonwebtoken from 'jsonwebtoken';
 import { User } from '../user/user-types';
 import config from '../config';
-import { AppError } from '../error';
 import { PasswordServices, passwordServices } from './password';
 import { UserServices, userServices } from '../user';
 
